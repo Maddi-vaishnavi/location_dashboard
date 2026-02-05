@@ -1,151 +1,28 @@
-import React, { useEffect, useState } from 'react';
-
-async function apiRequest(path, options = {}) {
-  const res = await fetch(path, {
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    ...options
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Request failed with status ${res.status}`);
-  }
-  return res.json();
-}
+import React, { useState } from 'react';
 
 function DashboardPage() {
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState(null);
-  const [error, setError] = useState('');
-  const [email, setEmail] = useState('');
-  const [locations, setLocations] = useState([]);
-  const [selectedLocationName, setSelectedLocationName] = useState('');
-  const [saving, setSaving] = useState(false);
+  const [demoMode] = useState(true);
+  const [selectedLocation, setSelectedLocation] = useState(0);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        setLoading(true);
-        const data = await apiRequest('/api/auth/session');
-        if (!cancelled) {
-          setSession(data);
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setError('Unable to load session. Is the backend server running on port 4000?');
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
+  // Demo data for static display
+  const demoLocations = [
+    {
+      id: 1,
+      name: 'locations/123456789',
+      title: 'Main Street Coffee Shop',
+      description: 'A cozy neighborhood coffee shop serving premium espresso and fresh pastries.',
+      hours: 'Monday-Friday: 7:00 AM - 6:00 PM\nSaturday-Sunday: 8:00 AM - 5:00 PM'
+    },
+    {
+      id: 2,
+      name: 'locations/987654321',
+      title: 'Downtown Bakery',
+      description: 'Artisan bakery specializing in fresh bread and custom cakes.',
+      hours: 'Monday-Saturday: 6:00 AM - 4:00 PM\nSunday: Closed'
     }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  ];
 
-  const handleEmailLogin = async (e) => {
-    e.preventDefault();
-    setError('');
-    try {
-      const data = await apiRequest('/api/auth/email-login', {
-        method: 'POST',
-        body: JSON.stringify({ email })
-      });
-      setSession((prev) => ({ ...(prev || {}), user: data.user, hasGoogleConnection: false }));
-    } catch (e) {
-      setError('Login failed. Please check your email and try again.');
-    }
-  };
-
-  const handleDisconnectGoogle = async () => {
-    setError('');
-    try {
-      await apiRequest('/api/auth/google/disconnect', { method: 'POST' });
-      setSession((prev) => ({ ...(prev || {}), hasGoogleConnection: false }));
-      setLocations([]);
-      setSelectedLocationName('');
-    } catch (e) {
-      setError('Failed to disconnect Google Business Profile.');
-    }
-  };
-
-  const loadLocations = async () => {
-    setError('');
-    try {
-      const data = await apiRequest('/api/locations');
-      setLocations(data.locations || []);
-      if (data.locations && data.locations.length > 0) {
-        setSelectedLocationName(data.locations[0].name);
-      }
-    } catch (e) {
-      setError('Unable to load locations from Google Business Profile API.');
-    }
-  };
-
-  const handleUpdateLocation = async (e) => {
-    e.preventDefault();
-    if (!selectedLocationName) return;
-    setSaving(true);
-    setError('');
-    try {
-      const form = e.target;
-      const description = form.description.value.trim();
-      const regularHours = form.regularHours.value
-        ? JSON.parse(form.regularHours.value)
-        : undefined;
-
-      const body = {};
-      if (description) body.description = description;
-      if (regularHours) body.regularHours = regularHours;
-
-      if (Object.keys(body).length === 0) {
-        setError('Please provide at least one field to update.');
-        setSaving(false);
-        return;
-      }
-
-      await apiRequest(`/api/locations/${encodeURIComponent(selectedLocationName)}`, {
-        method: 'PATCH',
-        body: JSON.stringify(body)
-      });
-    } catch (e) {
-      setError('Failed to update location. Check field formats and try again.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleCreatePost = async (e) => {
-    e.preventDefault();
-    if (!selectedLocationName) return;
-    setSaving(true);
-    setError('');
-    try {
-      const form = e.target;
-      const summary = form.summary.value.trim();
-      if (!summary) {
-        setError('Post summary is required.');
-        setSaving(false);
-        return;
-      }
-      await apiRequest(`/api/locations/${encodeURIComponent(selectedLocationName)}/posts`, {
-        method: 'POST',
-        body: JSON.stringify({ summary })
-      });
-      form.reset();
-    } catch (e) {
-      setError('Failed to create Google Business Profile post.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const user = session?.user || null;
-  const hasGoogle = Boolean(session?.hasGoogleConnection);
+  const currentLocation = demoLocations[selectedLocation];
 
   return (
     <div className="page">
@@ -156,11 +33,12 @@ function DashboardPage() {
           Google OAuth 2.0. This dashboard is intended for verified business owners only.
         </p>
 
-        {error && (
-          <div className="card" style={{ borderColor: 'rgba(248,113,113,0.7)', marginTop: '1rem' }}>
-            <p className="small-note">{error}</p>
-          </div>
-        )}
+        <div className="card" style={{ borderColor: 'rgba(59,130,246,0.7)', marginTop: '1rem', marginBottom: '1rem' }}>
+          <p className="small-note">
+            <strong>Demo Mode:</strong> This is a static demonstration of the dashboard interface. In a production deployment with backend services, 
+            this would connect to Google Business Profile APIs via OAuth 2.0 authentication.
+          </p>
+        </div>
 
         <div className="auth-card">
           <div className="auth-panel">
@@ -169,48 +47,18 @@ function DashboardPage() {
               Sign in with your Google account to authorize access to your own Google Business Profile locations. You can
               revoke this access at any time from your Google Account.
             </p>
-            {!user ? (
-              <div className="stacked" style={{ marginTop: '0.75rem' }}>
-                <a href="/api/auth/google" className="button button-primary">
-                  Sign in with Google
-                </a>
-                <p className="small-note">
-                  This uses Google OAuth 2.0 to authenticate you and connect your Google Business Profile in one step. We
-                  only request the scopes required to manage your own locations.
-                </p>
-                <div className="field">
-                  <label className="field-label" htmlFor="login-email">
-                    (Optional) Business email for reference
-                  </label>
-                  <input
-                    id="login-email"
-                    className="field-input"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@business.com"
-                  />
-                </div>
+            <div className="stacked" style={{ marginTop: '0.75rem' }}>
+              <div className="button button-primary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+                Sign in with Google (Demo)
               </div>
-            ) : (
-              <div style={{ marginTop: '0.75rem' }}>
-                <p className="small-note">
-                  Signed in as <strong>{user.email}</strong> via Google.
-                </p>
-                <button
-                  type="button"
-                  className="button button-ghost"
-                  onClick={async () => {
-                    await apiRequest('/api/auth/logout', { method: 'POST' });
-                    setSession(null);
-                    setLocations([]);
-                    setSelectedLocationName('');
-                  }}
-                >
-                  Sign out
-                </button>
-              </div>
-            )}
+              <p className="small-note">
+                This uses Google OAuth 2.0 to authenticate you and connect your Google Business Profile in one step. We
+                only request the scopes required to manage your own locations.
+              </p>
+              <p className="small-note" style={{ fontStyle: 'italic' }}>
+                In demo mode, authentication is simulated. Connect a backend server to enable full functionality.
+              </p>
+            </div>
           </div>
 
           <div className="auth-panel">
@@ -220,25 +68,12 @@ function DashboardPage() {
               account for ads or review manipulation.
             </p>
             <div className="stacked" style={{ marginTop: '0.75rem' }}>
-              {!hasGoogle && (
-                <p className="small-note">
-                  Once you have completed &quot;Sign in with Google&quot; above, your Google Business Profile connection
-                  status will appear here.
-                </p>
-              )}
-              {hasGoogle && (
-                <>
-                  <span className="small-note">
-                    Google Business Profile is connected for this account. You can revoke access at any time below.
-                  </span>
-                  <button type="button" className="button button-ghost" onClick={handleDisconnectGoogle}>
-                    Disconnect Google account
-                  </button>
-                  <button type="button" className="button" onClick={loadLocations}>
-                    Load my locations
-                  </button>
-                </>
-              )}
+              <span className="small-note">
+                Google Business Profile connection status will appear here after authentication.
+              </span>
+              <div className="button" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+                Load my locations (Demo)
+              </div>
             </div>
           </div>
         </div>
@@ -247,26 +82,22 @@ function DashboardPage() {
           <aside className="sidebar">
             <h2>Your locations</h2>
             <p className="small-note">
-              Only locations returned by the Google Business Profile APIs for your connected account will appear here.
+              Demo locations shown below. In production, only locations returned by the Google Business Profile APIs for your connected account will appear here.
             </p>
             <ul className="sidebar-list">
-              {locations.map((loc) => (
+              {demoLocations.map((loc, index) => (
                 <li
-                  key={loc.name}
+                  key={loc.id}
                   className={
-                    selectedLocationName === loc.name ? 'sidebar-item active' : 'sidebar-item'
+                    selectedLocation === index ? 'sidebar-item active' : 'sidebar-item'
                   }
-                  onClick={() => setSelectedLocationName(loc.name)}
+                  onClick={() => setSelectedLocation(index)}
+                  style={{ cursor: 'pointer' }}
                 >
-                  <span>{loc.title || loc.locationName || loc.name}</span>
-                  <span className="sidebar-badge">GBP</span>
+                  <span>{loc.title}</span>
+                  <span className="sidebar-badge">Demo</span>
                 </li>
               ))}
-              {locations.length === 0 && (
-                <li className="small-note" style={{ marginTop: '0.5rem' }}>
-                  No locations loaded yet. After connecting Google Business Profile, click &quot;Load my locations&quot;.
-                </li>
-              )}
             </ul>
           </aside>
 
@@ -280,15 +111,26 @@ function DashboardPage() {
               </div>
             </div>
 
-            {!hasGoogle && (
-              <p className="small-note">
-                To manage your profile, first sign in with your email and connect Google Business Profile above.
-              </p>
-            )}
-
-            {hasGoogle && selectedLocationName && (
+            {currentLocation && (
               <div className="stacked">
-                <form onSubmit={handleUpdateLocation} className="stacked">
+                <div className="card" style={{ marginBottom: '1.5rem' }}>
+                  <h3 style={{ marginBottom: '0.5rem' }}>{currentLocation.title}</h3>
+                  <p className="small-note" style={{ marginBottom: '1rem' }}>
+                    <strong>Location ID:</strong> {currentLocation.name}
+                  </p>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <strong>Description:</strong>
+                    <p style={{ marginTop: '0.25rem' }}>{currentLocation.description}</p>
+                  </div>
+                  <div>
+                    <strong>Hours:</strong>
+                    <pre style={{ marginTop: '0.25rem', whiteSpace: 'pre-wrap', fontSize: '0.875rem' }}>
+                      {currentLocation.hours}
+                    </pre>
+                  </div>
+                </div>
+
+                <form className="stacked" onSubmit={(e) => { e.preventDefault(); alert('Demo mode: Form submission disabled. Connect backend to enable updates.'); }}>
                   <fieldset className="fieldset">
                     <legend>Business information</legend>
                     <div className="fieldset-grid">
@@ -301,6 +143,7 @@ function DashboardPage() {
                           name="description"
                           className="field-textarea"
                           placeholder="Describe your business in your own words."
+                          defaultValue={currentLocation.description}
                         />
                       </div>
                       <div className="field">
@@ -319,8 +162,8 @@ function DashboardPage() {
                         </p>
                       </div>
                     </div>
-                    <button type="submit" className="button button-primary" disabled={saving}>
-                      {saving ? 'Saving…' : 'Save changes'}
+                    <button type="submit" className="button button-primary" disabled>
+                      Save changes (Demo Mode)
                     </button>
                     <p className="small-note">
                       Changes are applied only to the selected location and are subject to Google&apos;s standard review and
@@ -329,7 +172,7 @@ function DashboardPage() {
                   </fieldset>
                 </form>
 
-                <form onSubmit={handleCreatePost} className="stacked">
+                <form className="stacked" onSubmit={(e) => { e.preventDefault(); alert('Demo mode: Post creation disabled. Connect backend to enable posting.'); }}>
                   <fieldset className="fieldset">
                     <legend>Google Business Profile posts</legend>
                     <div className="field">
@@ -343,8 +186,8 @@ function DashboardPage() {
                         placeholder="Share a legitimate update about your business (e.g., new hours, new service, special notice)."
                       />
                     </div>
-                    <button type="submit" className="button" disabled={saving}>
-                      {saving ? 'Publishing…' : 'Publish post'}
+                    <button type="submit" className="button" disabled>
+                      Publish post (Demo Mode)
                     </button>
                     <p className="small-note">
                       Posts are created on your behalf for the selected location using the official Google Business Profile
@@ -360,6 +203,18 @@ function DashboardPage() {
                     engagement, or ads automation.
                   </span>
                 </div>
+
+                <div className="card" style={{ marginTop: '1.5rem', borderColor: 'rgba(156,163,175,0.5)' }}>
+                  <h3 style={{ marginBottom: '0.5rem' }}>About this demo</h3>
+                  <p className="small-note">
+                    This is a static demonstration of the Google Business Profile management dashboard. To enable full functionality:
+                  </p>
+                  <ul style={{ marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
+                    <li className="small-note">Deploy the backend server (Node.js/Express) to handle OAuth and API calls</li>
+                    <li className="small-note">Configure Google OAuth credentials in your backend</li>
+                    <li className="small-note">Update API endpoints in the frontend to point to your backend URL</li>
+                  </ul>
+                </div>
               </div>
             )}
           </section>
@@ -370,4 +225,3 @@ function DashboardPage() {
 }
 
 export default DashboardPage;
-

@@ -1,8 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
 import { config } from './config.js';
 import { createRouter } from './routes.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -39,10 +44,38 @@ app.get('/api/health', (req, res) => {
 // Attach main application routes under /api
 app.use('/api', createRouter());
 
-app.listen(config.port, () => {
-  console.log(
-    `GBP management backend listening on port ${config.port} (environment=${config.appEnvironment})`
-  );
+// Setup Vite middleware or static files based on environment
+async function setupServer() {
+  if (config.appEnvironment === 'development') {
+    // In development, serve Vite dev server as middleware
+    const { createServer } = await import('vite');
+    const vite = await createServer({
+      server: { middlewareMode: true },
+      appType: 'spa',
+      root: resolve(__dirname, '../../client')
+    });
+    app.use(vite.middlewares);
+  } else {
+    // In production, serve static files from client/dist
+    app.use(express.static(resolve(__dirname, '../../client/dist')));
+    app.get('*', (req, res) => {
+      res.sendFile(resolve(__dirname, '../../client/dist/index.html'));
+    });
+  }
+
+  app.listen(config.port, () => {
+    console.log(
+      `GBP management platform running on port ${config.port} (environment=${config.appEnvironment})`
+    );
+    if (config.appEnvironment === 'development') {
+      console.log(`Frontend and backend are both available at http://localhost:${config.port}`);
+    }
+  });
+}
+
+setupServer().catch((err) => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });
 
 // NOTE (Compliance):
