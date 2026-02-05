@@ -7,6 +7,10 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true
+  },
+  // Ensure proper handling of GitHub Pages routing
+  preview: {
+    port: 4173
   }
 });
 
