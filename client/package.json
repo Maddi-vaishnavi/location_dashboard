@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && npm run copy-404",
-    "copy-404": "node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
+    "copy-404": "node scripts/copy-404.js",
     "preview": "vite preview",
     "deploy": "npm run build && gh-pages -d dist"
   },
