@@ -9,9 +9,7 @@ function FeaturesPage() {
           <div>
             <h1 className="section-title">Features built for Google Business Profile compliance</h1>
             <p className="section-subtitle">
-              This platform helps <strong>small and mid-sized businesses</strong> manage their own Google Business Profiles on
-              Google Search and Maps using the <strong>official Google Business Profile APIs</strong>. We never scrape Google
-              or automate reviews or ads.
+              Manage your own profile with official APIs. No scraping, no review or ads automation.
             </p>
           </div>
         </div>
@@ -19,8 +17,7 @@ function FeaturesPage() {
           <div className="card">
             <div className="card-title">Secure Google OAuth 2.0 connection</div>
             <p className="card-subtitle">
-              Connect your Google Business Profile using Google&apos;s official OAuth 2.0 flow. Access can be revoked at any
-              time from your Google Account or from within the dashboard.
+              Connect using Google&apos;s OAuth 2.0 flow with revocable access.
             </p>
             <ul className="list">
               <li className="list-item">
@@ -29,41 +26,39 @@ function FeaturesPage() {
               </li>
               <li className="list-item">
                 <span className="list-bullet">✓</span>
-                <span>Minimum required scopes for GBP management.</span>
+                <span>Minimum required scopes.</span>
               </li>
             </ul>
           </div>
           <div className="card">
             <div className="card-title">Business information management</div>
             <p className="card-subtitle">
-              Keep your Google Maps and Search listing accurate by updating hours, business description, and services from one
-              place.
+              Update hours, description, and services in one place.
             </p>
             <ul className="list">
               <li className="list-item">
                 <span className="list-bullet">✓</span>
-                <span>Regular and special opening hours.</span>
+                <span>Regular and special hours.</span>
               </li>
               <li className="list-item">
                 <span className="list-bullet">✓</span>
-                <span>Profile description and service list.</span>
+                <span>Description and services.</span>
               </li>
             </ul>
           </div>
           <div className="card">
             <div className="card-title">Posts &amp; review monitoring</div>
             <p className="card-subtitle">
-              Publish legitimate posts to your profile and monitor incoming reviews. Review data is read-only – no automated
-              replies or manipulation.
+              Publish legitimate posts and monitor reviews (read-only).
             </p>
             <ul className="list">
               <li className="list-item">
                 <span className="list-bullet">✓</span>
-                <span>Owner-authored Google Business Profile posts.</span>
+                <span>Owner-authored posts.</span>
               </li>
               <li className="list-item">
                 <span className="list-bullet">!</span>
-                <span>Strictly no fake engagement or review gating.</span>
+                <span>No fake engagement or gating.</span>
               </li>
             </ul>
           </div>
@@ -75,12 +70,10 @@ function FeaturesPage() {
           <div>
             <h2 className="section-title">Designed for Google API policy review</h2>
             <p className="section-subtitle">
-              This application is intentionally scoped to demonstrate <strong>legitimate business intent</strong>, transparent
-              data usage, and strict alignment with Google Business Profile API policies.
+              Intentionally scoped for transparent, policy-aligned use.
             </p>
             <p className="small-note">
-              We do <strong>not</strong> provide payments, ad automation, bulk posting, or any features that could be used to
-              manipulate rankings or reviews.
+              No payments, ad automation, bulk posting, or review manipulation.
             </p>
           </div>
           <div className="card">
@@ -88,19 +81,19 @@ function FeaturesPage() {
             <ul className="list">
               <li className="list-item">
                 <span className="list-bullet">•</span>
-                <span>No resale or sharing of Google data.</span>
+                <span>No resale of Google data.</span>
               </li>
               <li className="list-item">
                 <span className="list-bullet">•</span>
-                <span>No scraping or bypassing Google restrictions.</span>
+                <span>No scraping or bypassing restrictions.</span>
               </li>
               <li className="list-item">
                 <span className="list-bullet">•</span>
-                <span>No automated review replies or fake activity.</span>
+                <span>No automated review replies.</span>
               </li>
               <li className="list-item">
                 <span className="list-bullet">•</span>
-                <span>Access is always consented and revocable.</span>
+                <span>Access is consented and revocable.</span>
               </li>
             </ul>
           </div>

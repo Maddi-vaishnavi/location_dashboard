@@ -8,8 +8,7 @@ function ContactPage() {
           <div>
             <h1 className="section-title">Contact &amp; Support</h1>
             <p className="section-subtitle">
-              Have questions about how we use the Google Business Profile APIs, or need help managing your listings? Send us a
-              message and we&apos;ll get back to you.
+              Questions about the API integration or your listing? Send a message.
             </p>
           </div>
         </div>
@@ -23,7 +22,7 @@ function ContactPage() {
           </div>
           <div className="field">
             <label className="field-label" htmlFor="email">
-              Business email
+              Professional email
             </label>
             <input className="field-input" id="email" name="email" placeholder="you@business.com" />
           </div>
@@ -35,15 +34,14 @@ function ContactPage() {
               className="field-textarea"
               id="message"
               name="message"
-              placeholder="Tell us about your business and what you want to manage in Google Business Profile."
+              placeholder="Tell us what you want to manage."
             />
           </div>
           <button type="button" className="button button-primary">
             Submit (demo only)
           </button>
           <p className="small-note">
-            This contact form is part of the demo. In a production deployment, messages would be sent to a monitored support
-            inbox for human review.
+            Demo only. Production sends messages to a support inbox.
           </p>
         </form>
       </section>

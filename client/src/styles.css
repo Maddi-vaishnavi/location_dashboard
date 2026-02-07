@@ -77,6 +77,32 @@ a {
   align-items: center;
   gap: 0.75rem;
   font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1040px) {
+  .header-inner {
+    flex-wrap: wrap;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: center;
+    row-gap: 0.35rem;
+  }
+
+  .nav {
+    gap: 0.35rem;
+    font-size: 0.85rem;
+  }
+
+  .nav-link {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .logo-text {
+    font-size: 0.85rem;
+  }
 }
 
 .nav-link {
@@ -95,6 +121,13 @@ a {
   background: rgba(59, 130, 246, 0.2);
   color: #e5e7eb;
   opacity: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .header-actions .button-primary {
@@ -425,11 +458,18 @@ a {
 }
 
 .auth-card {
-  max-width: 720px;
+  max-width: 100%;
   margin-top: 1rem;
+  width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.05fr);
   gap: 1.75rem;
+}
+
+.full-bleed {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
 .auth-panel {
@@ -577,6 +617,7 @@ a {
 @media (max-width: 900px) {
   .page-hero {
     grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
   }
 
   .hero-card-body {
@@ -598,6 +639,146 @@ a {
   .dashboard-layout {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .header-inner {
+    gap: 0.75rem;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.65rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .button {
+    justify-content: center;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .legal-page h1 {
+    font-size: 1.35rem;
+  }
+
+  .form {
+    max-width: 100%;
+  }
+}
+
+/* Mobile: hamburger and nav drawer */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 0.65rem;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nav-toggle:hover {
+  background: rgba(30, 41, 59, 0.98);
+}
+.nav-toggle-bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  margin: 0 auto;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.menu-open .nav-toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.menu-open .nav-toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+.menu-open .nav-toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Tablet + Mobile: collapse nav into hamburger */
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: flex;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  .nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 8;
+  }
+
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 4.5rem 1.25rem 1.5rem;
+    background: rgba(2, 6, 23, 0.98);
+    backdrop-filter: blur(16px);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    z-index: 9;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: visibility 0.2s, opacity 0.2s, transform 0.2s;
+    overflow-y: auto;
+  }
+
+  .menu-open .nav {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .nav .nav-link {
+    padding: 0.85rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .header-actions .button-primary {
+    padding-inline: 0.75rem;
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 720px) {
@@ -605,11 +786,15 @@ a {
     flex-wrap: wrap;
   }
 
-  .nav {
-    display: none;
+  .logo-text {
+    font-size: 0.8rem;
   }
 
   .main {
     padding-inline: 1rem;
+  }
+
+  .fieldset-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

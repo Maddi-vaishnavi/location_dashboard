@@ -27,52 +27,49 @@ function DashboardPage() {
   return (
     <div className="page">
       <section className="section">
-        <h1 className="section-title">Business dashboard</h1>
+        <h1 className="section-title">Practice dashboard</h1>
         <p className="section-subtitle">
-          Manage your own Google Business Profile locations on Google Search and Maps using secure, revocable access through
-          Google OAuth 2.0. This dashboard is intended for verified business owners only.
+          Manage your own Google Business Profile locations with secure, revocable OAuth 2.0 access.
         </p>
 
         <div className="card" style={{ borderColor: 'rgba(59,130,246,0.7)', marginTop: '1rem', marginBottom: '1rem' }}>
           <p className="small-note">
-            <strong>Demo Mode:</strong> This is a static demonstration of the dashboard interface. In a production deployment with backend services, 
-            this would connect to Google Business Profile APIs via OAuth 2.0 authentication.
+            <strong>Demo Mode:</strong> Static UI only. Connect a backend to enable live API access.
           </p>
         </div>
 
-        <div className="auth-card">
-          <div className="auth-panel">
-            <h2>Step 1: Sign in to the dashboard</h2>
-            <p>
-              Sign in with your Google account to authorize access to your own Google Business Profile locations. You can
-              revoke this access at any time from your Google Account.
-            </p>
-            <div className="stacked" style={{ marginTop: '0.75rem' }}>
-              <div className="button button-primary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
-                Sign in with Google (Demo)
+        <div className="full-bleed">
+          <div className="auth-card">
+            <div className="auth-panel">
+              <h2>Step 1: Sign in to the dashboard</h2>
+              <p>
+                Sign in with Google to authorize access to your own locations.
+              </p>
+              <div className="stacked" style={{ marginTop: '0.75rem' }}>
+                <div className="button button-primary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+                  Sign in with Google (Demo)
+                </div>
+                <p className="small-note">
+                  OAuth 2.0 with minimum required scopes.
+                </p>
+                <p className="small-note" style={{ fontStyle: 'italic' }}>
+                  Demo mode simulates authentication.
+                </p>
               </div>
-              <p className="small-note">
-                This uses Google OAuth 2.0 to authenticate you and connect your Google Business Profile in one step. We
-                only request the scopes required to manage your own locations.
-              </p>
-              <p className="small-note" style={{ fontStyle: 'italic' }}>
-                In demo mode, authentication is simulated. Connect a backend server to enable full functionality.
-              </p>
             </div>
-          </div>
 
-          <div className="auth-panel">
-            <h2>Step 2: Manage Google Business Profile access</h2>
-            <p>
-              After you sign in with Google, this section lets you manage and revoke that access. We never use your Google
-              account for ads or review manipulation.
-            </p>
-            <div className="stacked" style={{ marginTop: '0.75rem' }}>
-              <span className="small-note">
-                Google Business Profile connection status will appear here after authentication.
-              </span>
-              <div className="button" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
-                Load my locations (Demo)
+            <div className="auth-panel">
+              <h2>Step 2: Manage Google Business Profile access</h2>
+              <p>
+                Manage and revoke access after sign-in.
+              </p>
+              <div className="stacked" style={{ marginTop: '0.75rem' }}>
+                <span className="small-note">
+                  Connection status appears after authentication.
+                </span>
+                <div className="button" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+                  Load my locations (Demo)
+                </div>
               </div>
             </div>
           </div>
@@ -82,7 +79,7 @@ function DashboardPage() {
           <aside className="sidebar">
             <h2>Your locations</h2>
             <p className="small-note">
-              Demo locations shown below. In production, only locations returned by the Google Business Profile APIs for your connected account will appear here.
+              Demo locations shown. Production uses your connected account.
             </p>
             <ul className="sidebar-list">
               {demoLocations.map((loc, index) => (
@@ -106,7 +103,7 @@ function DashboardPage() {
               <div>
                 <h2 className="dashboard-main-title">Manage profile data</h2>
                 <p className="tagline">
-                  Updates made here are sent only to the selected Google Business Profile location using the official APIs.
+                  Updates apply only to the selected location via official APIs.
                 </p>
               </div>
             </div>
@@ -157,8 +154,7 @@ function DashboardPage() {
                           placeholder='{"periods":[{"openDay":"MONDAY","openTime":"09:00","closeDay":"MONDAY","closeTime":"17:00"}]}'
                         />
                         <p className="small-note">
-                          This field is optional. When provided, it must follow the structure expected by the Google Business
-                          Profile API.
+                          Optional. Must match the API format.
                         </p>
                       </div>
                     </div>
@@ -166,8 +162,7 @@ function DashboardPage() {
                       Save changes (Demo Mode)
                     </button>
                     <p className="small-note">
-                      Changes are applied only to the selected location and are subject to Google&apos;s standard review and
-                      publishing processes.
+                      Changes apply to the selected location only.
                     </p>
                   </fieldset>
                 </form>
@@ -190,8 +185,7 @@ function DashboardPage() {
                       Publish post (Demo Mode)
                     </button>
                     <p className="small-note">
-                      Posts are created on your behalf for the selected location using the official Google Business Profile
-                      APIs. We do not generate spam, fake promotions, or automated ad content.
+                      Posts are created for the selected location via official APIs.
                     </p>
                   </fieldset>
                 </form>
@@ -199,20 +193,19 @@ function DashboardPage() {
                 <div className="pill pill-warning">
                   <span className="pill-dot" />
                   <span>
-                    Compliance note: this dashboard is a management tool only. It does not provide review manipulation, fake
-                    engagement, or ads automation.
+                    Compliance note: management tool only. No review manipulation or ads automation.
                   </span>
                 </div>
 
                 <div className="card" style={{ marginTop: '1.5rem', borderColor: 'rgba(156,163,175,0.5)' }}>
                   <h3 style={{ marginBottom: '0.5rem' }}>About this demo</h3>
                   <p className="small-note">
-                    This is a static demonstration of the Google Business Profile management dashboard. To enable full functionality:
+                    Static demo only. To enable full functionality:
                   </p>
                   <ul style={{ marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
-                    <li className="small-note">Deploy the backend server (Node.js/Express) to handle OAuth and API calls</li>
-                    <li className="small-note">Configure Google OAuth credentials in your backend</li>
-                    <li className="small-note">Update API endpoints in the frontend to point to your backend URL</li>
+                    <li className="small-note">Deploy the backend server for OAuth and API calls</li>
+                    <li className="small-note">Configure Google OAuth credentials</li>
+                    <li className="small-note">Point the frontend to your backend URL</li>
                   </ul>
                 </div>
               </div>
